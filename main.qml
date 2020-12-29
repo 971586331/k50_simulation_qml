@@ -17,6 +17,9 @@ ApplicationWindow {
 
         Page2Form {
         }
+
+        Page3Form {
+        }
     }
 
     footer: TabBar {
@@ -24,10 +27,13 @@ ApplicationWindow {
         currentIndex: swipeView.currentIndex
 
         TabButton {
-            text: qsTr("Page 1")
+            text: qsTr("开关")
         }
         TabButton {
-            text: qsTr("Page 2")
+            text: qsTr("运行")
+        }
+        TabButton {
+            text: qsTr("调试")
         }
     }
 }
