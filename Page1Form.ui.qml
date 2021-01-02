@@ -8,6 +8,14 @@ Page {
         text: checked ? qsTr("关机") : qsTr("开机")
         anchors.horizontalCenter: parent.horizontalCenter
         y: parent.height / 4
+        onClicked: {
+            console.log("checked = ", checked)
+            if (checked == true) {
+
+            } else {
+
+            }
+        }
     }
     Label {
         id: label1
@@ -29,12 +37,12 @@ Page {
         anchors.leftMargin: 10
         anchors.verticalCenter: combobox1.verticalCenter
         x: (parent.width / 10) * 9
+        onClicked: {
+            console.log("刷新端口")
+            cpp_interface.refresh_com()
+        }
     }
 }
 
-/*##^##
-Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
-##^##*/
+
 
