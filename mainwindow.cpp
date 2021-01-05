@@ -79,57 +79,55 @@ void send_pack(QQueue<struct queue_t> *msg, enum e_pack_type pack_type,
  * @brief MainWindow::open_close_com 打开或关闭com口
  * @param onoff: true打开串口，false关闭串口
  */
-bool mainwindow::open_close_com(bool onoff)
+bool mainwindow::open_com(QString com_str)
 {
-    //打开串口
-    if(onoff == true)
+    //设置串口号
+    gSerial_Info.serialport->setPortName(com_str);
+    //以读写方式打开串口
+    if(gSerial_Info.serialport->open(QIODevice::ReadWrite))
     {
-        //设置串口号
-//        gSerial_Info.serialport->setPortName(com_combobox->currentText());
-        //以读写方式打开串口
-        if(gSerial_Info.serialport->open(QIODevice::ReadWrite))
+        //设置波特率
+        QString baud = "115200";
+        if( baud.isEmpty() == true )
         {
-            //设置波特率
-            QString baud = "115200";
-            if( baud.isEmpty() == true )
-            {
-                gSerial_Info.serialport->setBaudRate(115200);
-            }
-            else
-            {
-                gSerial_Info.serialport->setBaudRate(baud.toInt());
-            }
-            //设置数据位
-            gSerial_Info.serialport->setDataBits(QSerialPort::Data8);
-            //设置校验位
-            gSerial_Info.serialport->setParity(QSerialPort::NoParity);
-            //设置流控制
-            gSerial_Info.serialport->setFlowControl(QSerialPort::NoFlowControl);
-            //设置停止位
-            gSerial_Info.serialport->setStopBits(QSerialPort::OneStop);
-
-            connect(gSerial_Info.serialport,SIGNAL(readyRead()),this,SLOT(slots_serial_receive()));
+            gSerial_Info.serialport->setBaudRate(115200);
         }
         else
         {
-            return false;
+            gSerial_Info.serialport->setBaudRate(baud.toInt());
         }
+        //设置数据位
+        gSerial_Info.serialport->setDataBits(QSerialPort::Data8);
+        //设置校验位
+        gSerial_Info.serialport->setParity(QSerialPort::NoParity);
+        //设置流控制
+        gSerial_Info.serialport->setFlowControl(QSerialPort::NoFlowControl);
+        //设置停止位
+        gSerial_Info.serialport->setStopBits(QSerialPort::OneStop);
+
+        connect(gSerial_Info.serialport,SIGNAL(readyRead()),this,SLOT(slots_serial_receive()));
     }
     else
     {
-        gSerial_Info.serialport->close();
+        return false;
     }
     return true;
+}
+
+void mainwindow::close_com()
+{
+    gSerial_Info.serialport->close();
 }
 
 /**
  * @brief mainwindow::power_on  开机
  * @return
  */
-bool mainwindow::power_on()
+bool mainwindow::power_on(QString com_str)
 {
+    qDebug() << "com_str = " << com_str;
     // 执行开机流程
-    if( open_close_com(true) == true )
+    if( open_com(com_str) == true )
     {
         memset(&gk50_state, 0x00, sizeof(struct k50_state_t));
         weight_recv_flag = false;
@@ -153,15 +151,22 @@ bool mainwindow::power_on()
 void mainwindow::power_off()
 {
     // 执行关机流程
-    open_close_com(false);
+    close_com();
 }
 
 void mainwindow::refresh_com()
 {
+    m_devices.clear();
     foreach (const QSerialPortInfo &qspinfo, QSerialPortInfo::availablePorts())
     {
         qDebug() << "portname = " << qspinfo.portName();
+        m_devices.append(qspinfo.portName());
     }
+}
+
+QList<QString> mainwindow::get_devices()
+{
+    return m_devices;
 }
 
 

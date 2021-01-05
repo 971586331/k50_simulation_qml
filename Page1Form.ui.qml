@@ -3,6 +3,7 @@ import QtQuick.Controls 2.5
 import QtQuick.Extras 1.4
 
 Page {
+
     ToggleButton {
         id: onoff
         text: checked ? qsTr("关机") : qsTr("开机")
@@ -11,9 +12,9 @@ Page {
         onClicked: {
             console.log("checked = ", checked)
             if (checked == true) {
-
+                cpp_interface.power_on(combobox1.textAt(combobox1.currentIndex))
             } else {
-
+                cpp_interface.power_off()
             }
         }
     }
@@ -30,6 +31,10 @@ Page {
         anchors.left: label1.right
         anchors.leftMargin: 10
         anchors.verticalCenter: label1.verticalCenter
+        model: ListModel {
+                  id: model
+              }
+        currentIndex : 0
     }
     Button {
         text: qsTr("刷新端口")
@@ -39,10 +44,18 @@ Page {
         x: (parent.width / 10) * 9
         onClicked: {
             console.log("刷新端口")
+            model.clear()
             cpp_interface.refresh_com()
+            var list = cpp_interface.get_devices()
+            for(var i = 0; i<list.length; i++)
+            {
+                model.append({text: list[i]})
+            }
         }
     }
+
+//    function get_combobox_current_text()
+//    {
+//        return combobox1.textAt(currentIndex);
+//    }
 }
-
-
-

@@ -139,11 +139,15 @@ class mainwindow : public QObject
 public:
     explicit mainwindow(QObject *parent = nullptr);
 
-    bool open_close_com(bool onoff);
+    bool open_com(QString com_str);
+    void close_com();
 
-    Q_INVOKABLE bool power_on();
+    Q_INVOKABLE bool power_on(QString com_str);
     Q_INVOKABLE void power_off();
     Q_INVOKABLE void refresh_com();
+
+    QList<QString> m_devices;
+    Q_INVOKABLE QList<QString> get_devices();
 
 signals:
 
