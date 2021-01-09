@@ -4,7 +4,9 @@
 #include <QObject>
 #include <QtSerialPort/QSerialPort>
 #include <QQueue>
+#include <QTimer>
 
+#define STX (0x5A)
 #define EOT (0xA5)
 
 #define PACK_NUM_INDEX      (1)
@@ -141,6 +143,9 @@ public:
 
     bool open_com(QString com_str);
     void close_com();
+    void uart_data_handle(uint8_t *buff, int len);
+    void send_response_pack(uint8_t pack_num_1, enum e_error_code code);
+
 
     Q_INVOKABLE bool power_on(QString com_str);
     Q_INVOKABLE void power_off();
@@ -149,7 +154,15 @@ public:
     QList<QString> m_devices;
     Q_INVOKABLE QList<QString> get_devices();
 
+    QTimer *preheat_time;
+    QTimer *send_time;
+
 signals:
+
+private slots:
+    void slot_preheat_time_timeout();
+    void slots_serial_receive();
+    void slot_send_time_timeout();
 
 };
 
