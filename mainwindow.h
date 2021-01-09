@@ -5,6 +5,7 @@
 #include <QtSerialPort/QSerialPort>
 #include <QQueue>
 #include <QTimer>
+#include <QVariant>
 
 #define STX (0x5A)
 #define EOT (0xA5)
@@ -138,6 +139,9 @@ class mainwindow : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QVariant preheat_timeing READ get_preheat_timeing NOTIFY preheat_timeing_Changed)
+    Q_PROPERTY(QVariant warm_state READ get_warm_state NOTIFY warm_state_Changed)
+
 public:
     explicit mainwindow(QObject *parent = nullptr);
 
@@ -146,18 +150,27 @@ public:
     void uart_data_handle(uint8_t *buff, int len);
     void send_response_pack(uint8_t pack_num_1, enum e_error_code code);
 
+    short preheat_timeing = 10;  // 剩预热时间
+    QString warm_state = tr("未开机");
+    QVariant get_preheat_timeing();
+    QVariant get_warm_state();
 
     Q_INVOKABLE bool power_on(QString com_str);
     Q_INVOKABLE void power_off();
     Q_INVOKABLE void refresh_com();
+    Q_INVOKABLE void button_test();
 
     QList<QString> m_devices;
     Q_INVOKABLE QList<QString> get_devices();
 
     QTimer *preheat_time;
     QTimer *send_time;
+    QObject *warm_state_obj;
+    QObject *warm_time_obj;
 
 signals:
+    void preheat_timeing_Changed();
+    void warm_state_Changed();
 
 private slots:
     void slot_preheat_time_timeout();

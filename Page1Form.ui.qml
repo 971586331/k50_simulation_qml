@@ -32,9 +32,9 @@ Page {
         anchors.leftMargin: 10
         anchors.verticalCenter: label1.verticalCenter
         model: ListModel {
-                  id: model
-              }
-        currentIndex : 0
+            id: model
+        }
+        currentIndex: 0
     }
     Button {
         text: qsTr("刷新端口")
@@ -47,15 +47,22 @@ Page {
             model.clear()
             cpp_interface.refresh_com()
             var list = cpp_interface.get_devices()
-            for(var i = 0; i<list.length; i++)
-            {
-                model.append({text: list[i]})
+            for (var i = 0; i < list.length; i++) {
+                model.append({"text": list[i]})
             }
         }
     }
 
-//    function get_combobox_current_text()
-//    {
-//        return combobox1.textAt(currentIndex);
-//    }
+    InfoBanner {
+        id: messages
+    }
+
+    Button {
+        text: qsTr("test")
+        anchors.top: combobox1.bottom
+        anchors.leftMargin: 10
+        onClicked: {
+            messages.displayMessage("Hello World")
+        }
+    }
 }

@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include <QtSerialPort/QSerialPortInfo>
 #include <QDebug>
+#include <QQmlEngine>
+#include <QQmlComponent>
+#include <QVariant>
 
 struct Serial_Info gSerial_Info;
 uint8_t gpack_num = 0;  // 包序号
@@ -16,8 +19,6 @@ struct k50_state_t gk50_state =
     .czc = NO_CALIBRAT,
     .csc = NO_CALIBRAT,
 };
-short preheat_timeing = 10;  // 剩预热时间
-
 
 bool weight_recv_flag = false;
 bool timestamp_recv_flag = false;
@@ -25,6 +26,12 @@ bool preheat_flag = false;
 
 mainwindow::mainwindow(QObject *parent) : QObject(parent)
 {
+//    QQmlEngine *page2_engine = new QQmlEngine;
+//    QQmlComponent *component = new QQmlComponent(page2_engine, "qrc:/Page2Form.ui.qml");
+//    QObject *page2_obj = component->create();
+
+//    warm_state_obj = page2_obj->findChild<QObject*>("warm_state");
+//    warm_time_obj = page2_obj->findChild<QObject*>("warm_time");
 
     gSerial_Info.serialport = new QSerialPort(this);
 
@@ -359,6 +366,8 @@ bool mainwindow::power_on(QString com_str)
         send_pack(&gSerial_Info.q_msg, PACK_TYPE_STATE, 0, sizeof(struct k50_state_t), (uint8_t *)&gk50_state);
 
         preheat_time->start(1000);
+        warm_state = tr("预热中");
+        emit warm_state_Changed();
 
         return true;
     }
@@ -382,11 +391,12 @@ void mainwindow::power_off()
 void mainwindow::slot_preheat_time_timeout()
 {
     preheat_timeing --;
-//    time_remain_lineedit->setText(QString::number(preheat_timeing));
     qDebug() << "preheat_timeing = " << preheat_timeing;
     if( preheat_timeing < 0 )  // 预热完成
     {
-//        time_remain_label->setText(tr("预热状态：预热完成"));
+        warm_state = tr("预热完成");
+        emit warm_state_Changed();
+
         preheat_flag = true;
         preheat_time->stop();
         if( (weight_recv_flag == true) && (timestamp_recv_flag == true) )
@@ -404,6 +414,7 @@ void mainwindow::slot_preheat_time_timeout()
     }
     else  // 正在预热
     {
+        emit preheat_timeing_Changed();
         // 发送预热剩余时间
         send_pack(&gSerial_Info.q_msg, PACK_TYPE_PREHEAT, 0, 2, (uint8_t *)&preheat_timeing);
     }
@@ -425,4 +436,20 @@ QList<QString> mainwindow::get_devices()
     return m_devices;
 }
 
+int index = 0;
+void mainwindow::button_test()
+{
+    qDebug("button_test()");
+    warm_state_obj->setProperty("text", QString::number(index));
+    index ++;
+}
 
+QVariant mainwindow::get_preheat_timeing()
+{
+    return preheat_timeing;
+}
+
+QVariant mainwindow::get_warm_state()
+{
+    return warm_state;
+}
