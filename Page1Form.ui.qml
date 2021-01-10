@@ -48,7 +48,9 @@ Page {
             cpp_interface.refresh_com()
             var list = cpp_interface.get_devices()
             for (var i = 0; i < list.length; i++) {
-                model.append({"text": list[i]})
+                model.append({
+                                 "text": list[i]
+                             })
             }
         }
     }
@@ -62,7 +64,8 @@ Page {
         anchors.top: combobox1.bottom
         anchors.leftMargin: 10
         onClicked: {
-            messages.displayMessage("Hello World")
+            cpp_interface.button_test()
+            //            messages.displayMessage("Hello World")
         }
     }
 }

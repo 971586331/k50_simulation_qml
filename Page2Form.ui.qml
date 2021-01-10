@@ -5,6 +5,7 @@ import QtQuick.Extras 1.4
 
 Page {
     property int title_ratio: 40
+    property int data_2 : 0
 
     //    Timer {
     //        interval: 1000
@@ -105,22 +106,24 @@ Page {
             }
             Label {
                 id: calibra_label1
-                text: qsTr("x")
+                text: cpp_interface.calibrate_state[0]
             }
             Button {
                 id: calibra_button1
                 text: qsTr("校准")
+                onClicked: cpp_interface.slots_OS_calibrate_button_clicked()
             }
             Label {
                 text: qsTr("Flow Zero cal：")
             }
             Label {
                 id: calibra_label2
-                text: qsTr("x")
+                text: cpp_interface.calibrate_state[1]
             }
             Button {
                 id: calibra_button2
                 text: qsTr("校准")
+                onClicked: cpp_interface.slots_FZ_calibrate_button_clicked()
             }
             Label {
                 text: qsTr("OC2 Zero cal：")
@@ -128,11 +131,12 @@ Page {
             }
             Label {
                 id: calibra_label3
-                text: qsTr("x")
+                text: cpp_interface.calibrate_state[2]
             }
             Button {
                 id: calibra_button3
                 text: qsTr("校准")
+                onClicked: cpp_interface.slots_CZ_calibrate_button_clicked()
             }
             Label {
                 text: qsTr("CO2 Span cal：")
@@ -140,11 +144,12 @@ Page {
             }
             Label {
                 id: calibra_label4
-                text: qsTr("x")
+                text: cpp_interface.calibrate_state[3]
             }
             Button {
                 id: calibra_button4
                 text: qsTr("校准")
+                onClicked: cpp_interface.slots_CS_calibrate_button_clicked()
             }
         }
 
@@ -234,6 +239,7 @@ Page {
                 text: qsTr("开始采集：")
             }
             StatusIndicator {
+                objectName: "led"
                 Layout.row: 0
                 Layout.column: 1
                 Layout.columnSpan: 1
@@ -269,6 +275,10 @@ Page {
                 text: qsTr("VO2 in ml/min/kg:")
             }
             Slider {
+                id:slider1
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 2
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -284,9 +294,15 @@ Page {
                 Layout.fillWidth: true
                 TextInput {
                     id: data_2_textinput
+                    objectName: "data_2"
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider1.value
                     cursorVisible: false
+                    onTextChanged:
+                    {
+                        data_2 = text
+                        console.log("data_2 = ", data_2)
+                    }
                 }
             }
             // 3
@@ -297,6 +313,10 @@ Page {
                 text: qsTr("Breath Rate in breaths/minute:")
             }
             Slider {
+                id:slider2
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 3
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -313,7 +333,7 @@ Page {
                 TextInput {
                     id: data_3_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider2.value
                     cursorVisible: false
                 }
             }
@@ -325,6 +345,10 @@ Page {
                 text: qsTr("O2%:")
             }
             Slider {
+                id:slider3
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 4
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -341,7 +365,7 @@ Page {
                 TextInput {
                     id: data_4_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider3.value
                     cursorVisible: false
                 }
             }
@@ -353,6 +377,10 @@ Page {
                 text: qsTr("Tidal Volume in Litre:")
             }
             Slider {
+                id:slider4
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 5
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -369,7 +397,7 @@ Page {
                 TextInput {
                     id: data_5_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider4.value
                     cursorVisible: false
                 }
             }
@@ -381,6 +409,10 @@ Page {
                 text: qsTr("Total Calories Burned:")
             }
             Slider {
+                id:slider5
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 6
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -397,7 +429,7 @@ Page {
                 TextInput {
                     id: data_6_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider5.value
                     cursorVisible: false
                 }
             }
@@ -409,6 +441,10 @@ Page {
                 text: qsTr("Flow in L/s:")
             }
             Slider {
+                id:slider6
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 7
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -425,7 +461,7 @@ Page {
                 TextInput {
                     id: data_7_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider6.value
                     cursorVisible: false
                 }
             }
@@ -437,6 +473,10 @@ Page {
                 text: qsTr("VE in L/min:")
             }
             Slider {
+                id:slider7
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 8
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -453,7 +493,7 @@ Page {
                 TextInput {
                     id: data_8_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider7.value
                     cursorVisible: false
                 }
             }
@@ -465,6 +505,10 @@ Page {
                 text: qsTr("CO2%:")
             }
             Slider {
+                id:slider8
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 9
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -481,7 +525,7 @@ Page {
                 TextInput {
                     id: data_9_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider8.value
                     cursorVisible: false
                 }
             }
@@ -493,6 +537,10 @@ Page {
                 text: qsTr("VCO2 in ml/min:")
             }
             Slider {
+                id:slider9
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 10
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -509,7 +557,7 @@ Page {
                 TextInput {
                     id: data_10_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider9.value
                     cursorVisible: false
                 }
             }
@@ -521,6 +569,10 @@ Page {
                 text: qsTr("RER:")
             }
             Slider {
+                id:slider10
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 11
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -537,7 +589,7 @@ Page {
                 TextInput {
                     id: data_11_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider10.value
                     cursorVisible: false
                 }
             }
@@ -549,6 +601,10 @@ Page {
                 text: qsTr("ETO2 in %:")
             }
             Slider {
+                id:slider11
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 12
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -565,7 +621,7 @@ Page {
                 TextInput {
                     id: data_12_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider11.value
                     cursorVisible: false
                 }
             }
@@ -577,6 +633,10 @@ Page {
                 text: qsTr("ETCO2 in %:")
             }
             Slider {
+                id:slider12
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 13
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -593,7 +653,7 @@ Page {
                 TextInput {
                     id: data_13_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider12.value
                     cursorVisible: false
                 }
             }
@@ -605,6 +665,10 @@ Page {
                 text: qsTr("Pressure in kPa:")
             }
             Slider {
+                id:slider13
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 14
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -621,7 +685,7 @@ Page {
                 TextInput {
                     id: data_14_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider13.value
                     cursorVisible: false
                 }
             }
@@ -633,6 +697,10 @@ Page {
                 text: qsTr("Temperature in °C:")
             }
             Slider {
+                id:slider14
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 15
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -649,7 +717,7 @@ Page {
                 TextInput {
                     id: data_15_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider14.value
                     cursorVisible: false
                 }
             }
@@ -661,6 +729,10 @@ Page {
                 text: qsTr("RH in %:")
             }
             Slider {
+                id:slider15
+                from:1
+                to:100
+                stepSize:1
                 Layout.row: 16
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -677,7 +749,7 @@ Page {
                 TextInput {
                     id: data_16_textinput
                     anchors.fill: parent
-                    text: qsTr("x")
+                    text: slider15.value
                     cursorVisible: false
                 }
             }

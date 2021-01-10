@@ -55,11 +55,11 @@ enum e_error_code
 // 校准对象
 enum e_calibrat_obj
 {
-    CALIBRAT_NULL,
-    CALIBRAT_OS,
-    CALIBRAT_FZ,
-    CALIBRAT_CZ,
-    CALIBRAT_CS,
+    CALIBRAT_NULL = -1,
+    CALIBRAT_OS = 0,
+    CALIBRAT_FZ = 1,
+    CALIBRAT_CZ = 2,
+    CALIBRAT_CS = 3,
 };
 
 // 校准状态
@@ -141,6 +141,7 @@ class mainwindow : public QObject
 
     Q_PROPERTY(QVariant preheat_timeing READ get_preheat_timeing NOTIFY preheat_timeing_Changed)
     Q_PROPERTY(QVariant warm_state READ get_warm_state NOTIFY warm_state_Changed)
+    Q_PROPERTY(QVariant calibrate_state READ get_calibrate_state NOTIFY calibrate_state_Changed)
 
 public:
     explicit mainwindow(QObject *parent = nullptr);
@@ -152,31 +153,40 @@ public:
 
     short preheat_timeing = 10;  // 剩预热时间
     QString warm_state = tr("未开机");
+    QList<QString> calibrate_state = {tr("未校准"), tr("未校准"), tr("未校准"), tr("未校准")};
     QVariant get_preheat_timeing();
     QVariant get_warm_state();
+    QVariant get_calibrate_state();
 
     Q_INVOKABLE bool power_on(QString com_str);
     Q_INVOKABLE void power_off();
     Q_INVOKABLE void refresh_com();
     Q_INVOKABLE void button_test();
+    Q_INVOKABLE void slots_OS_calibrate_button_clicked();
+    Q_INVOKABLE void slots_FZ_calibrate_button_clicked();
+    Q_INVOKABLE void slots_CZ_calibrate_button_clicked();
+    Q_INVOKABLE void slots_CS_calibrate_button_clicked();
 
     QList<QString> m_devices;
     Q_INVOKABLE QList<QString> get_devices();
 
     QTimer *preheat_time;
     QTimer *send_time;
-    QObject *warm_state_obj;
-    QObject *warm_time_obj;
+    QTimer *calibrat_time;
+    QObject *page2_obj;
+    QObject *led_obj;
+    QObject *data_2_obj;
 
 signals:
     void preheat_timeing_Changed();
     void warm_state_Changed();
+    void calibrate_state_Changed();
 
 private slots:
     void slot_preheat_time_timeout();
     void slots_serial_receive();
     void slot_send_time_timeout();
-
+    void slot_calibrat_time_timeout();
 };
 
 #endif // MAINWINDOW_H

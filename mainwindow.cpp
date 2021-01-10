@@ -4,6 +4,7 @@
 #include <QQmlEngine>
 #include <QQmlComponent>
 #include <QVariant>
+#include <QQmlProperty>
 
 struct Serial_Info gSerial_Info;
 uint8_t gpack_num = 0;  // 包序号
@@ -26,12 +27,12 @@ bool preheat_flag = false;
 
 mainwindow::mainwindow(QObject *parent) : QObject(parent)
 {
-//    QQmlEngine *page2_engine = new QQmlEngine;
-//    QQmlComponent *component = new QQmlComponent(page2_engine, "qrc:/Page2Form.ui.qml");
-//    QObject *page2_obj = component->create();
+    QQmlEngine *page2_engine = new QQmlEngine;
+    QQmlComponent *component = new QQmlComponent(page2_engine, "qrc:/Page2Form.ui.qml");
+    page2_obj = component->create();
 
-//    warm_state_obj = page2_obj->findChild<QObject*>("warm_state");
-//    warm_time_obj = page2_obj->findChild<QObject*>("warm_time");
+    led_obj = page2_obj->findChild<QObject*>("led");
+    data_2_obj = page2_obj->findChild<QObject*>("data_2");
 
     gSerial_Info.serialport = new QSerialPort(this);
 
@@ -42,6 +43,12 @@ mainwindow::mainwindow(QObject *parent) : QObject(parent)
     //串口发送数据
     send_time = new QTimer(this);
     connect(send_time, SIGNAL(timeout()), this, SLOT(slot_send_time_timeout()));
+
+    // 校准计时
+    calibrat_time = new QTimer(this);
+    connect(calibrat_time, SIGNAL(timeout()), this, SLOT(slot_calibrat_time_timeout()));
+    calibrat_time->setSingleShot(true);
+    calibration_time_value = 5000;
 }
 
 uint8_t sum_verify(uint8_t *data, int len)
@@ -283,25 +290,25 @@ void mainwindow::uart_data_handle(uint8_t *buff, int len)
         case PACK_TYPE_OSC:         // 校准
         {
             qDebug() << "recv PACK_TYPE_OSC ";
-//            slots_OS_calibrate_button_clicked();
+            slots_OS_calibrate_button_clicked();
         }
         break;
         case PACK_TYPE_FZC:         // 校准
         {
             qDebug() << "recv PACK_TYPE_FZC ";
-//            slots_FZ_calibrate_button_clicked();
+            slots_FZ_calibrate_button_clicked();
         }
         break;
         case PACK_TYPE_CZC:         // 校准
         {
             qDebug() << "recv PACK_TYPE_CZC ";
-//            slots_CZ_calibrate_button_clicked();
+            slots_CZ_calibrate_button_clicked();
         }
         break;
         case PACK_TYPE_CSC:         // 校准
         {
             qDebug() << "recv PACK_TYPE_CSC ";
-//            slots_CS_calibrate_button_clicked();
+            slots_CS_calibrate_button_clicked();
         }
         break;
         case PACK_TYPE_START:       // 开始采集
@@ -313,7 +320,7 @@ void mainwindow::uart_data_handle(uint8_t *buff, int len)
                 qDebug() << "开始采集 : " << upload_time_value;
                 // qml显示，开定时器
 //                upload_time->start(upload_time_value);
-//                capture_state_led_label->setStyleSheet("background-color:green;");
+                led_obj->setProperty("color", "green");
             }
         }
         break;
@@ -322,7 +329,7 @@ void mainwindow::uart_data_handle(uint8_t *buff, int len)
             qDebug() << "recv PACK_TYPE_STOP ";
             // qml显示，关定时器
 //            upload_time->stop();
-//            capture_state_led_label->setStyleSheet("background-color:black;");
+            led_obj->setProperty("color", "darkgray");
         }
         break;
         default : break;
@@ -431,17 +438,96 @@ void mainwindow::refresh_com()
     }
 }
 
+void mainwindow::slots_OS_calibrate_button_clicked()
+{
+    gcalibrat_obj = CALIBRAT_OS;
+    calibrate_state[CALIBRAT_OS] = tr("正在校准");
+    emit calibrate_state_Changed();
+    calibrat_time->start(calibration_time_value);
+    gk50_state.osc = CALIBRATING;
+    send_pack(&gSerial_Info.q_msg, PACK_TYPE_STATE, 0, sizeof(struct k50_state_t), (uint8_t *)&gk50_state);
+}
+
+void mainwindow::slots_FZ_calibrate_button_clicked()
+{
+    gcalibrat_obj = CALIBRAT_FZ;
+    calibrate_state[CALIBRAT_FZ] = tr("正在校准");
+    emit calibrate_state_Changed();
+    calibrat_time->start(calibration_time_value);
+    gk50_state.fzc = CALIBRATING;
+    send_pack(&gSerial_Info.q_msg, PACK_TYPE_STATE, 0, sizeof(struct k50_state_t), (uint8_t *)&gk50_state);
+}
+
+void mainwindow::slots_CZ_calibrate_button_clicked()
+{
+    gcalibrat_obj = CALIBRAT_CZ;
+    calibrate_state[CALIBRAT_CZ] = tr("正在校准");
+    emit calibrate_state_Changed();
+    calibrat_time->start(calibration_time_value);
+    gk50_state.czc = CALIBRATING;
+    send_pack(&gSerial_Info.q_msg, PACK_TYPE_STATE, 0, sizeof(struct k50_state_t), (uint8_t *)&gk50_state);
+}
+
+void mainwindow::slots_CS_calibrate_button_clicked()
+{
+    gcalibrat_obj = CALIBRAT_CS;
+    calibrate_state[CALIBRAT_CS] = tr("正在校准");
+    emit calibrate_state_Changed();
+    calibrat_time->start(calibration_time_value);
+    gk50_state.csc = CALIBRATING;
+    send_pack(&gSerial_Info.q_msg, PACK_TYPE_STATE, 0, sizeof(struct k50_state_t), (uint8_t *)&gk50_state);
+}
+
+/**
+ * @brief MainWindow::slot_calibrat_time_timeout
+ */
+void mainwindow::slot_calibrat_time_timeout()
+{
+    switch(gcalibrat_obj)
+    {
+        case CALIBRAT_OS:
+            calibrate_state[CALIBRAT_OS] = tr("校准完成");
+            emit calibrate_state_Changed();
+            gk50_state.osc = COMPLETE_CALIBRAT;
+            send_pack(&gSerial_Info.q_msg, PACK_TYPE_STATE, 0, sizeof(struct k50_state_t), (uint8_t *)&gk50_state);
+            break;
+        case CALIBRAT_FZ:
+            calibrate_state[CALIBRAT_FZ] = tr("校准完成");
+            emit calibrate_state_Changed();
+            gk50_state.fzc = COMPLETE_CALIBRAT;
+            send_pack(&gSerial_Info.q_msg, PACK_TYPE_STATE, 0, sizeof(struct k50_state_t), (uint8_t *)&gk50_state);
+        break;
+        case CALIBRAT_CZ:
+            calibrate_state[CALIBRAT_CZ] = tr("校准完成");
+            emit calibrate_state_Changed();
+            gk50_state.czc = COMPLETE_CALIBRAT;
+            send_pack(&gSerial_Info.q_msg, PACK_TYPE_STATE, 0, sizeof(struct k50_state_t), (uint8_t *)&gk50_state);
+        break;
+        case CALIBRAT_CS:
+            calibrate_state[CALIBRAT_CS] = tr("校准完成");
+            emit calibrate_state_Changed();
+            gk50_state.csc = COMPLETE_CALIBRAT;
+            send_pack(&gSerial_Info.q_msg, PACK_TYPE_STATE, 0, sizeof(struct k50_state_t), (uint8_t *)&gk50_state);
+        break;
+        default : break;
+    }
+
+}
+
 QList<QString> mainwindow::get_devices()
 {
     return m_devices;
 }
 
-int index = 0;
 void mainwindow::button_test()
 {
     qDebug("button_test()");
-    warm_state_obj->setProperty("text", QString::number(index));
-    index ++;
+//    QVariant value = data_2_obj->property("text");
+//    QVariant value1 = page2_obj->property("data_2");
+    int value = QQmlProperty(data_2_obj, "text").read().toInt();
+    int value1 = QQmlProperty(page2_obj, "data_2").read().toInt();
+    qDebug() << "value = " << value;
+    qDebug() << "value1 = " << value1;
 }
 
 QVariant mainwindow::get_preheat_timeing()
@@ -452,4 +538,9 @@ QVariant mainwindow::get_preheat_timeing()
 QVariant mainwindow::get_warm_state()
 {
     return warm_state;
+}
+
+QVariant mainwindow::get_calibrate_state()
+{
+    return QVariant::fromValue<QList<QString>>(calibrate_state);
 }
