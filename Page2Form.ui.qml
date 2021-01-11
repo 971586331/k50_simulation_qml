@@ -5,7 +5,7 @@ import QtQuick.Extras 1.4
 
 Page {
     property int title_ratio: 40
-    property int data_2 : 0
+    property alias volume: lable1.text
 
     //    Timer {
     //        interval: 1000
@@ -15,6 +15,12 @@ Page {
     //            console.log("name = ", name)
     //        }
     //    }
+
+    Loader
+    {
+        id:loader
+    }
+
     ScrollView {
         ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
         ScrollBar.vertical.policy: ScrollBar.AlwaysOn
@@ -49,7 +55,13 @@ Page {
             columns: 2
             rows: 2
             Label {
+                id: lable1
+                objectName: "warm1"
                 text: qsTr("预热状态：")
+                onTextChanged:
+                {
+                    console.log("text = ", text)
+                }
             }
             Label {
                 id: warm_state
@@ -300,8 +312,8 @@ Page {
                     cursorVisible: false
                     onTextChanged:
                     {
-                        data_2 = text
-                        console.log("data_2 = ", data_2)
+//                        data_2 = text
+//                        console.log("data_2 = ", data_2)
                     }
                 }
             }

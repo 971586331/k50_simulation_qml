@@ -1,10 +1,13 @@
 #include "mainwindow.h"
+#include "main.h"
 #include <QtSerialPort/QSerialPortInfo>
 #include <QDebug>
 #include <QQmlEngine>
 #include <QQmlComponent>
 #include <QVariant>
 #include <QQmlProperty>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickView>
 
 struct Serial_Info gSerial_Info;
 uint8_t gpack_num = 0;  // 包序号
@@ -33,6 +36,13 @@ mainwindow::mainwindow(QObject *parent) : QObject(parent)
 
     led_obj = page2_obj->findChild<QObject*>("led");
     data_2_obj = page2_obj->findChild<QObject*>("data_2");
+    warm1_obj = page2_obj->findChild<QObject*>("warm1");
+
+//    viewer = new QQuickView;
+//    viewer->setSource(QUrl(QLatin1String("qrc:/Page2Form.ui.qml")));
+//    rootObject = viewer->rootObject();
+//    rootObject->setProperty("title_ratio", 20);
+//    viewer->rootObject()->setProperty("volume", 40);
 
     gSerial_Info.serialport = new QSerialPort(this);
 
@@ -49,6 +59,21 @@ mainwindow::mainwindow(QObject *parent) : QObject(parent)
     connect(calibrat_time, SIGNAL(timeout()), this, SLOT(slot_calibrat_time_timeout()));
     calibrat_time->setSingleShot(true);
     calibration_time_value = 5000;
+}
+
+void mainwindow::button_test()
+{
+    static int index = 0;
+    qDebug("button_test()");
+//    warm1_obj->setProperty("text", index);
+    page2_obj->setProperty("volume", index);
+        index ++;
+//    QVariant value = data_2_obj->property("text");
+//    QVariant value1 = page2_obj->property("data_2");
+//    int value = QQmlProperty(data_2_obj, "text").read().toInt();
+//    int value1 = QQmlProperty(page2_obj, "data_2").read().toInt();
+//    qDebug() << "value = " << value;
+//    qDebug() << "value1 = " << value1;
 }
 
 uint8_t sum_verify(uint8_t *data, int len)
@@ -517,17 +542,6 @@ void mainwindow::slot_calibrat_time_timeout()
 QList<QString> mainwindow::get_devices()
 {
     return m_devices;
-}
-
-void mainwindow::button_test()
-{
-    qDebug("button_test()");
-//    QVariant value = data_2_obj->property("text");
-//    QVariant value1 = page2_obj->property("data_2");
-    int value = QQmlProperty(data_2_obj, "text").read().toInt();
-    int value1 = QQmlProperty(page2_obj, "data_2").read().toInt();
-    qDebug() << "value = " << value;
-    qDebug() << "value1 = " << value1;
 }
 
 QVariant mainwindow::get_preheat_timeing()

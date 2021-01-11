@@ -176,6 +176,7 @@ public:
     QObject *page2_obj;
     QObject *led_obj;
     QObject *data_2_obj;
+    QObject *warm1_obj;
 
 signals:
     void preheat_timeing_Changed();
