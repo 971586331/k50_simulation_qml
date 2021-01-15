@@ -1,9 +1,9 @@
 #include "mainwindow.h"
-#include "page1.h"
 #include <QtSerialPort/QSerialPortInfo>
 #include <QDebug>
 #include <QQmlEngine>
 #include <QQmlComponent>
+#include <QQmlContext>
 #include <QVariant>
 #include <QQmlProperty>
 #include <QtQuick/QQuickItem>
@@ -30,26 +30,14 @@ bool preheat_flag = false;
 
 mainwindow::mainwindow(QObject *parent) : QObject(parent)
 {
-//    QQmlEngine *page2_engine = new QQmlEngine;
-//    QQmlComponent *component = new QQmlComponent(page2_engine, "qrc:/Page2Form.ui.qml");
-//    page2_obj = component->create();
-
-//    led_obj = page2_obj->findChild<QObject*>("led");
-//    data_2_obj = page2_obj->findChild<QObject*>("data_2");
-//    warm1_obj = page2_obj->findChild<QObject*>("warm1");
-
-//    viewer = new QQuickView;
-//    viewer->setSource(QUrl(QLatin1String("qrc:/Page2Form.ui.qml")));
-//    rootObject = viewer->rootObject();
-//    rootObject->setProperty("title_ratio", 20);
-//    viewer->rootObject()->setProperty("volume", 40);
-
-
     gp_qmlEngine = new QQmlApplicationEngine(this);
+    gp_qmlEngine->rootContext()->setContextProperty("cpp_interface", this);
     QQmlComponent lv_component(gp_qmlEngine, QUrl(QStringLiteral("qrc:/main.qml")));
     gp_rootObject = lv_component.create();
     gp_rootObject->setParent(this);
-    warm1_obj = gp_rootObject->findChild<QObject*>("warm1");
+
+    QObject::connect(gp_rootObject, SIGNAL(signal_button_10_onClicked()),
+                         this, SLOT(slot_button_10_onClicked()));
 
     gSerial_Info.serialport = new QSerialPort(this);
 
@@ -68,21 +56,22 @@ mainwindow::mainwindow(QObject *parent) : QObject(parent)
     calibration_time_value = 5000;
 }
 
-void mainwindow::button_test()
+int index = 0;
+void mainwindow::slot_button_10_onClicked()
 {
-    static int index = 0;
-    qDebug("button_test()");
 
     gp_rootObject->setProperty("gv_name",index);
-//    warm1_obj->setProperty("text", index);
-//    page2_obj->setProperty("volume", index);
-        index ++;
-//    QVariant value = data_2_obj->property("text");
-//    QVariant value1 = page2_obj->property("data_2");
-//    int value = QQmlProperty(data_2_obj, "text").read().toInt();
-//    int value1 = QQmlProperty(page2_obj, "data_2").read().toInt();
-//    qDebug() << "value = " << value;
-//    qDebug() << "value1 = " << value1;
+    index ++;
+}
+
+void mainwindow::button_test()
+{
+    qDebug("button_test()");
+
+//    gp_rootObject->setProperty("gv_name",index);
+//    index ++;
+    int volume = gp_rootObject->property("volume").toInt();
+    qDebug() << "volume = " << volume << endl;
 }
 
 uint8_t sum_verify(uint8_t *data, int len)

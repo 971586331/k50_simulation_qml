@@ -192,6 +192,7 @@ private slots:
     void slots_serial_receive();
     void slot_send_time_timeout();
     void slot_calibrat_time_timeout();
+    void slot_button_10_onClicked();
 };
 
 #endif // MAINWINDOW_H
