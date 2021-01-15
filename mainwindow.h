@@ -6,6 +6,7 @@
 #include <QQueue>
 #include <QTimer>
 #include <QVariant>
+#include <QQmlApplicationEngine>
 
 #define STX (0x5A)
 #define EOT (0xA5)
@@ -177,6 +178,9 @@ public:
     QObject *led_obj;
     QObject *data_2_obj;
     QObject *warm1_obj;
+
+    QQmlApplicationEngine *gp_qmlEngine;
+    QObject *gp_rootObject;
 
 signals:
     void preheat_timeing_Changed();

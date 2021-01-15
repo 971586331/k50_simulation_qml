@@ -3,7 +3,8 @@
 #include <QQmlContext>
 #include <QQmlComponent>
 #include "mainwindow.h"
-#include "main.h"
+#include "page1.h"
+#include <QApplication>
 
 int main(int argc, char *argv[])
 {
@@ -23,6 +24,11 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
     engine.load(url);
+
+//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+//    QApplication app(argc, argv);
+
+//    new page1();
 
     return app.exec();
 }

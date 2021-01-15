@@ -6,21 +6,16 @@ import QtQuick.Extras 1.4
 Page {
     property int title_ratio: 40
     property alias volume: lable1.text
+    property int name: 1
 
-    //    Timer {
-    //        interval: 1000
-    //        running: true
-    //        repeat: true
-    //        onTriggered: {
-    //            console.log("name = ", name)
+    //        Timer {
+    //            interval: 1000
+    //            running: true
+    //            repeat: true
+    //            onTriggered: {
+    //                console.log("name = ", name)
+    //            }
     //        }
-    //    }
-
-    Loader
-    {
-        id:loader
-    }
-
     ScrollView {
         ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
         ScrollBar.vertical.policy: ScrollBar.AlwaysOn
@@ -57,9 +52,9 @@ Page {
             Label {
                 id: lable1
                 objectName: "warm1"
-                text: qsTr("预热状态：")
-                onTextChanged:
-                {
+                //                text: qsTr("预热状态：")
+                text: name
+                onTextChanged: {
                     console.log("text = ", text)
                 }
             }
@@ -287,10 +282,10 @@ Page {
                 text: qsTr("VO2 in ml/min/kg:")
             }
             Slider {
-                id:slider1
-                from:1
-                to:100
-                stepSize:1
+                id: slider1
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 2
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -310,10 +305,10 @@ Page {
                     anchors.fill: parent
                     text: slider1.value
                     cursorVisible: false
-                    onTextChanged:
-                    {
-//                        data_2 = text
-//                        console.log("data_2 = ", data_2)
+                    onTextChanged: {
+
+                        //                        data_2 = text
+                        //                        console.log("data_2 = ", data_2)
                     }
                 }
             }
@@ -325,10 +320,10 @@ Page {
                 text: qsTr("Breath Rate in breaths/minute:")
             }
             Slider {
-                id:slider2
-                from:1
-                to:100
-                stepSize:1
+                id: slider2
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 3
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -357,10 +352,10 @@ Page {
                 text: qsTr("O2%:")
             }
             Slider {
-                id:slider3
-                from:1
-                to:100
-                stepSize:1
+                id: slider3
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 4
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -389,10 +384,10 @@ Page {
                 text: qsTr("Tidal Volume in Litre:")
             }
             Slider {
-                id:slider4
-                from:1
-                to:100
-                stepSize:1
+                id: slider4
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 5
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -421,10 +416,10 @@ Page {
                 text: qsTr("Total Calories Burned:")
             }
             Slider {
-                id:slider5
-                from:1
-                to:100
-                stepSize:1
+                id: slider5
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 6
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -453,10 +448,10 @@ Page {
                 text: qsTr("Flow in L/s:")
             }
             Slider {
-                id:slider6
-                from:1
-                to:100
-                stepSize:1
+                id: slider6
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 7
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -485,10 +480,10 @@ Page {
                 text: qsTr("VE in L/min:")
             }
             Slider {
-                id:slider7
-                from:1
-                to:100
-                stepSize:1
+                id: slider7
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 8
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -517,10 +512,10 @@ Page {
                 text: qsTr("CO2%:")
             }
             Slider {
-                id:slider8
-                from:1
-                to:100
-                stepSize:1
+                id: slider8
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 9
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -549,10 +544,10 @@ Page {
                 text: qsTr("VCO2 in ml/min:")
             }
             Slider {
-                id:slider9
-                from:1
-                to:100
-                stepSize:1
+                id: slider9
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 10
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -581,10 +576,10 @@ Page {
                 text: qsTr("RER:")
             }
             Slider {
-                id:slider10
-                from:1
-                to:100
-                stepSize:1
+                id: slider10
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 11
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -613,10 +608,10 @@ Page {
                 text: qsTr("ETO2 in %:")
             }
             Slider {
-                id:slider11
-                from:1
-                to:100
-                stepSize:1
+                id: slider11
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 12
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -645,10 +640,10 @@ Page {
                 text: qsTr("ETCO2 in %:")
             }
             Slider {
-                id:slider12
-                from:1
-                to:100
-                stepSize:1
+                id: slider12
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 13
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -677,10 +672,10 @@ Page {
                 text: qsTr("Pressure in kPa:")
             }
             Slider {
-                id:slider13
-                from:1
-                to:100
-                stepSize:1
+                id: slider13
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 14
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -709,10 +704,10 @@ Page {
                 text: qsTr("Temperature in °C:")
             }
             Slider {
-                id:slider14
-                from:1
-                to:100
-                stepSize:1
+                id: slider14
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 15
                 Layout.column: 1
                 Layout.columnSpan: 3
@@ -741,10 +736,10 @@ Page {
                 text: qsTr("RH in %:")
             }
             Slider {
-                id:slider15
-                from:1
-                to:100
-                stepSize:1
+                id: slider15
+                from: 1
+                to: 100
+                stepSize: 1
                 Layout.row: 16
                 Layout.column: 1
                 Layout.columnSpan: 3

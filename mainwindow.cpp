@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "main.h"
+#include "page1.h"
 #include <QtSerialPort/QSerialPortInfo>
 #include <QDebug>
 #include <QQmlEngine>
@@ -30,19 +30,26 @@ bool preheat_flag = false;
 
 mainwindow::mainwindow(QObject *parent) : QObject(parent)
 {
-    QQmlEngine *page2_engine = new QQmlEngine;
-    QQmlComponent *component = new QQmlComponent(page2_engine, "qrc:/Page2Form.ui.qml");
-    page2_obj = component->create();
+//    QQmlEngine *page2_engine = new QQmlEngine;
+//    QQmlComponent *component = new QQmlComponent(page2_engine, "qrc:/Page2Form.ui.qml");
+//    page2_obj = component->create();
 
-    led_obj = page2_obj->findChild<QObject*>("led");
-    data_2_obj = page2_obj->findChild<QObject*>("data_2");
-    warm1_obj = page2_obj->findChild<QObject*>("warm1");
+//    led_obj = page2_obj->findChild<QObject*>("led");
+//    data_2_obj = page2_obj->findChild<QObject*>("data_2");
+//    warm1_obj = page2_obj->findChild<QObject*>("warm1");
 
 //    viewer = new QQuickView;
 //    viewer->setSource(QUrl(QLatin1String("qrc:/Page2Form.ui.qml")));
 //    rootObject = viewer->rootObject();
 //    rootObject->setProperty("title_ratio", 20);
 //    viewer->rootObject()->setProperty("volume", 40);
+
+
+    gp_qmlEngine = new QQmlApplicationEngine(this);
+    QQmlComponent lv_component(gp_qmlEngine, QUrl(QStringLiteral("qrc:/main.qml")));
+    gp_rootObject = lv_component.create();
+    gp_rootObject->setParent(this);
+    warm1_obj = gp_rootObject->findChild<QObject*>("warm1");
 
     gSerial_Info.serialport = new QSerialPort(this);
 
@@ -65,8 +72,10 @@ void mainwindow::button_test()
 {
     static int index = 0;
     qDebug("button_test()");
+
+    gp_rootObject->setProperty("gv_name",index);
 //    warm1_obj->setProperty("text", index);
-    page2_obj->setProperty("volume", index);
+//    page2_obj->setProperty("volume", index);
         index ++;
 //    QVariant value = data_2_obj->property("text");
 //    QVariant value1 = page2_obj->property("data_2");

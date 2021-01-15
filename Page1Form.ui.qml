@@ -10,12 +10,13 @@ Page {
         anchors.horizontalCenter: parent.horizontalCenter
         y: parent.height / 4
         onClicked: {
-            console.log("checked = ", checked)
-            if (checked == true) {
-                cpp_interface.power_on(combobox1.textAt(combobox1.currentIndex))
-            } else {
-                cpp_interface.power_off()
-            }
+
+            //            console.log("checked = ", checked)
+            //            if (checked == true) {
+            //                cpp_interface.power_on(combobox1.textAt(combobox1.currentIndex))
+            //            } else {
+            //                cpp_interface.power_off()
+            //            }
         }
     }
     Label {
