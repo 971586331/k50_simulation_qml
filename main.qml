@@ -90,6 +90,11 @@ ApplicationWindow {
 //                  signal_button_10_onClicked();
                 }
             }
+            Image
+            {
+                anchors.top: button_10.bottom
+                source: "qrc:/image/arrow.png"
+            }
         }
 
         Page {

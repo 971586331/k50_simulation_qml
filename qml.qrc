@@ -7,5 +7,7 @@
         <file>Page3Form.ui.qml</file>
         <file>InfoBanner.qml</file>
         <file>InfoBannerComponent.qml</file>
+        <file>qt-logo.png</file>
+        <file>image/arrow.png</file>
     </qresource>
 </RCC>

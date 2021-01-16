@@ -11,7 +11,8 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    mainwindow cpp_interface;
+//    mainwindow cpp_interface;
+    new mainwindow();
 
 //    QQmlApplicationEngine engine;
 //    engine.rootContext()->setContextProperty("cpp_interface", &cpp_interface);
